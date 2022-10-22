@@ -1,0 +1,123 @@
+#graph1 {
+    position:relative;
+    border: 1px solid black;
+}
+
+
+.firstGraph {
+    position:absolute;
+}
+
+.height {
+    position:relative;
+}
+
+.length {
+    position:relative;
+}
+
+#startbutton1 {
+    position:relative;
+    background:green;
+    padding:5px;
+    font-size: large;
+    left:20px;
+    top:5px;
+}
+
+#startbutton1:hover{
+    box-shadow: 0 0 5px yellow;
+    background:rgb(0, 81, 0);
+}
+
+#timer1 {
+    position:relative;
+}
+
+
+
+/*  ---------------- Graph2 --------------------   */
+
+#graph2 {
+    border:1px solid black;
+    position:relative;
+}
+
+.secondGraph {
+    position:absolute;
+    left:500px;
+}
+
+.height2 {
+    position:relative;
+}
+
+.length2 {
+    position:relative;
+}
+
+#startbutton2 {
+    position:relative;
+    background:green;
+    padding:5px;
+    font-size: large;
+    left:-250px;
+    top:40px;
+}
+
+#startbutton2:hover{
+    box-shadow: 0 0 5px yellow;
+    background:rgb(0, 81, 0);
+}
+
+.function_type {
+    position:relative;
+}
+
+#timer2 {
+    position:relative;
+    top:40px;
+}
+
+/*  ---------------- Graph3 --------------------   */
+
+#graph3 {
+    border:1px solid black;
+    position:relative;
+}
+
+.thirdGraph {
+    position:absolute;
+    left:1000px;
+}
+
+.height3 {
+    position:relative;
+}
+
+.length3 {
+    position:relative;
+}
+
+#startbutton3 {
+    position:relative;
+    background:green;
+    padding:5px;
+    font-size: large;
+    left:-250px;
+    top:40px;
+}
+
+#startbutton3:hover{
+    box-shadow: 0 0 5px yellow;
+    background:rgb(0, 81, 0);
+}
+
+.function_type {
+    position:relative;
+}
+
+#timer3 {
+    position:relative;
+    top:40px;
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brachistochrone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="firstGraph">
+    <canvas id="graph1" width="420px" height="420px"></canvas>
+    <form class="height">
+        height:&nbsp;<input type="number" value="355" step="1" id="height">
+        <button type="button" id="height_submit">submit</button>
+    </form>
+    <form class="length">
+        length:&nbsp;<input type="number" value="348" step="1" id="length">
+        <button type="button" id="length_submit">submit</button>
+    </form>
+    <form>
+        friction:&nbsp;<input type="number" id="friction1" value="0" step="0.1" min="0" max="2">
+        <button type="button" id="friction_submit">submit</button>
+    </form>
+    <form>
+        ball radius:&nbsp;<input type="range" id="scale1" min="1" max="20">
+    </form>
+    
+    <button type="button" id="startbutton1">play</button>
+    <p id="timer1">time:&nbsp;</p>
+    </div>
+    <div class="secondGraph">
+        <canvas id="graph2" width="420px" height="420px"></canvas>
+        <form class="height2">
+            height:&nbsp;<input type="number" value="355" step="1" id="height2">
+            <button type="button" id="height_submit2">submit</button>
+        </form>
+        <form class="length2">
+            length:&nbsp;<input type="number" value="348" step="1" id="length2">
+            <button type="button" id="length_submit2">submit</button>
+        </form>
+        <form>
+            friction:&nbsp;<input type="number" id="friction2" value="0" step="0.1" min="0" max="2">
+            <button type="button" id="friction_submit2">submit</button>
+        </form>
+        <form>
+            ball radius:&nbsp;<input type="range" id="scale2" min="1" max="20">
+        </form>
+        <label for="function_select" class="function_type">Choose a function:&nbsp;</label>
+        <select id="function_select" class="function_type">
+            <option value="0">1/x</option>
+            <option value="1">Brachistochrone</option>
+            <option value="2">-&radic;x</option>
+            <option value="3">circle</option>
+        </select>
+        <button type="button" id="startbutton2">play</button>
+        <p id="timer2">time:&nbsp;</p>
+    </div>
+
+    <div class="thirdGraph">
+        <canvas id="graph3" width="420px" height="420px"></canvas>
+        <form class="height3">
+            height:&nbsp;<input type="number" value="355" step="1" id="height3">
+            <button type="button" id="height_submit3">submit</button>
+        </form>
+        <form class="length3">
+            length:&nbsp;<input type="number" value="348" step="1" id="length3">
+            <button type="button" id="length_submit3">submit</button>
+        </form>
+        <form>
+            friction:&nbsp;<input type="number" id="friction3" value="0" step="0.1" min="0" max="2">
+            <button type="button" id="friction_submit3">submit</button>
+        </form>
+        <form>
+            ball radius:&nbsp;<input type="range" id="scale3" min="1" max="20">
+        </form>
+        <label for="function_select3" class="function_type">Choose a function:&nbsp;</label>
+        <select id="function_select3" class="function_type">
+            <option value="0">1/x</option>
+            <option value="1">Brachistochrone</option>
+            <option value="2">-&radic;x</option>
+            <option value="3">circle</option>
+        </select>
+        <button type="button" id="startbutton3">play</button>
+        <p id="timer3">time:&nbsp;</p>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
