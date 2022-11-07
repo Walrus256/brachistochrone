@@ -47,6 +47,8 @@ let Hpx;
 let Dpx;
 // koeficient treni (0.35 pro drevo)
 let F = 0;
+// zrychleni
+const accel = 1.5;
 
 const lastText = ["H = 355", "D = 348"];
 let topCoords = [[15, 45, 25, 45], [368, 395, 368, 405]]
@@ -83,13 +85,13 @@ function redrawLine() {
     if (Number(length_input.value) > Number(height_input.value)){
         ratio = height_input.value / length_input.value;
 
-        topCoords[0][1] = (1 - ratio) * 355 + 45;
-        topCoords[0][3] = (1 - ratio) * 355 + 45;  
+        topCoords[0][1] = (1 - ratio) * 348 + 45;
+        topCoords[0][3] = (1 - ratio) * 348 + 45;  
     } else if (Number(length_input.value) < Number(height_input.value)) {
         ratio = Number(length_input.value) / Number(height_input.value);
 
-        topCoords[1][0] = ratio * 348 + 20;
-        topCoords[1][2] = ratio * 348 + 20;
+        topCoords[1][0] = ratio * 355 + 20;
+        topCoords[1][2] = ratio * 355 + 20;
     }
     startGraph1();
 }
@@ -148,7 +150,7 @@ function startAnimation1(t, induced = 0) {
     timeDif += time2.getSeconds() - time1.getSeconds() + (time2.getMilliseconds() - time1.getMilliseconds())/1000;
     time1 = time2;
     timer1.textContent = `time: ${timeDif.toFixed(2)}s`;
-    setInterval(() => startAnimation1(2 * timeDif), 50);
+    setInterval(() => startAnimation1(accel * timeDif), 50);
     //requestAnimationFrame(() => startAnimation1(timeDif));
 }
 // ------------------ END functions - graph1 --------------------
@@ -170,6 +172,7 @@ let time3;
 let time4;
 let xpos2 = 0;
 let ypos2 = Hpx2;
+let Rad2;
 // ------------------ functions - graph2 ------------------------
 function startGraph2(x = topCoords2[0][0] + 5, y = topCoords2[0][1] - R2) {
     ctx2.clearRect(0, 0, graph2.width, graph2.height);
@@ -200,7 +203,23 @@ function startGraph2(x = topCoords2[0][0] + 5, y = topCoords2[0][1] - R2) {
             ctx2.lineTo(21, 399);
             break;
         case "1":
-            ctx2.lineTo(topCoords2[1][0], topCoords2[1][1] + 5);
+            let values = [];
+            for(i=0; i <= 30000; i++){
+                let out = Math.round((i/100)*Math.acos(1-Hpx2/(i/100)) - (Hpx2*(2*(i/100) - Hpx2))**0.5);
+                if (out - 5 < Math.round(Dpx2) && Math.round(Dpx2) < out + 5) {
+                    while(out - 5 < Math.round(Dpx2) && Math.round(Dpx2) < out + 5){
+                        values.push(i/100);
+                        out = Math.round((i/10000)*Math.acos(1-Hpx2/(i/10000)) - (Hpx2*(2*(i/10000) - Hpx2))**0.5);
+                        i++;
+                    }
+                    Rad2 = values.reduce((a,b) => a + b, 0)/values.length;
+                    break;
+                };
+            }
+            for (let i=0; i <= Hpx2; i++){
+                ctx2.lineTo((Rad2 * Math.acos(1 - (i)/Rad2) - ((i) * (2 * Rad2 - (i))) ** 0.5) + topCoords2[0][0] + 5, graph2.height - (graph2.height - topCoords2[1][1] - 5 + Hpx2 - i));
+            }
+            ctx2.lineTo(21, 399);
             break;
         case "2":
             for (let i=0; i <= Dpx2; i++){
@@ -238,19 +257,21 @@ function redrawLine2() {
     if (Number(length_input2.value) > Number(height_input2.value)){
         ratio2 = height_input2.value / length_input2.value;
 
-        topCoords2[0][1] = (1 - ratio2) * 355 + 45;
-        topCoords2[0][3] = (1 - ratio2) * 355 + 45;  
+        topCoords2[0][1] = (1 - ratio2) * 348 + 45;
+        topCoords2[0][3] = (1 - ratio2) * 348 + 45;  
     } else if (Number(length_input2.value) < Number(height_input2.value)){
         ratio2 = Number(length_input2.value) / Number(height_input2.value);
 
-        topCoords2[1][0] = ratio2 * 348 + 20;
-        topCoords2[1][2] = ratio2 * 348 + 20;
+        topCoords2[1][0] = ratio2 * 355 + 20;
+        topCoords2[1][2] = ratio2 * 355 + 20;
     }
     x1 = topCoords2[0][0] + 5;
     y1 = topCoords2[0][1] - R2;
 
-    Hpx2 = topCoords2[1][1] + 5 - topCoords2[0][1];
-    Dpx2 = topCoords2[1][0] - (topCoords2[0][0] + 5);
+     Hpx2 = topCoords2[1][1] + 5 - topCoords2[0][1];
+     Dpx2 = topCoords2[1][0] - (topCoords2[0][0] + 5);
+    // Hpx2 = Number(height_input2.value);
+    // Dpx2 = Number(length_input.value);
 
     ypos2 = Hpx2;
     startGraph2();
@@ -284,6 +305,7 @@ function startAnimation2(t, induced = 0) {
             c = (Hpx2 * (Dpx2 + 1) / (Dpx2 * (xpos2 + 1 + 0.00001)) - Hpx2 * (Dpx2 + 1) / (Dpx2 * (xpos2 + 1))) / 0.00001;
             break;
         case "1":
+            c = 1 / (((Rad2 * Math.acos(1 - (Hpx2 - ypos2 + 0.00001) / Rad2) - ((Hpx2 - ypos2 + 0.00001) * (2 * Rad2 - (Hpx2 - ypos2 + 0.00001))) ** 0.5) - (Rad2 * Math.acos(1 - (Hpx2 - ypos2) / Rad2) - ((Hpx2 - ypos2) * (2 * Rad2 - (Hpx2 - ypos2))) ** 0.5))/ 0.00001);
             break;
         case "2":
             c = ((-Hpx2/Math.sqrt(Dpx2)) * Math.sqrt(xpos2 + 0.00001) - (-Hpx2/Math.sqrt(Dpx2)) * Math.sqrt(xpos2)) / 0.00001;
@@ -296,15 +318,14 @@ function startAnimation2(t, induced = 0) {
     a = 9.80665 * (Math.sin(angle2) - F2 * Math.cos(angle2));
     x1 = (0.5 * a * (t - t1) ** 2 + v1 * (t - t1)) / Math.sqrt(c ** 2 + 1);
     y1 = - c * x1;
-    //console.log(`x1: ${x1}\nc: ${c}\na: ${a}\nt1: ${t1}\ntimeDif2: ${2 * timeDif2}\nv1: ${v1}`);
+    if (functions.value === "1") {
+        x1 = -x1;
+       }
     xpos2 += x1;
     ypos2 -= y1;
     v1 += a * (t - t1);
     t1 = t;
-    if (functions.value === "1"){
-        xpos2 = 0.5 * 355 * (t - Math.sin(t));
-        ypos2 = 0.5 * 355 * (-1 + Math.cos(t)) + 355;
-    }
+
     
     if (ypos2 > Hpx2 || xpos2 > Dpx2 || x1 < - 0.01) {
         playButton2 *= -1;
@@ -317,6 +338,7 @@ function startAnimation2(t, induced = 0) {
         return;
     }
     startGraph2(xpos2 + 20 /*+ Number(R2)*/, 400 - ypos2 - Number(R2));
+    //startGraph2(xpos2*(348/Dpx2) + 20, 400 - ypos2*(355/Hpx2) - Number(R2));
     if (induced === 1) {
         time3 = new Date();
     }
@@ -324,7 +346,7 @@ function startAnimation2(t, induced = 0) {
     timeDif2 += time4.getSeconds() - time3.getSeconds() + (time4.getMilliseconds() - time3.getMilliseconds())/1000;
     time3 = time4;
     timer2.textContent = `time: ${timeDif2.toFixed(2)}s`;
-    setInterval(() => startAnimation2(2 * timeDif2), 10);
+    setInterval(() => startAnimation2(accel * timeDif2), 10);
 }
 // ------------------ END functions - graph2 --------------------
 // ------------------ functions - graph3 -----------------------
@@ -345,6 +367,7 @@ let time5;
 let time6;
 let xpos3 = 0;
 let ypos3 = Hpx3;
+let Rad3;
 
 function startGraph3(x = topCoords3[0][0] + 5, y = topCoords3[0][1] - R3) {
     ctx3.clearRect(0, 0, graph3.width, graph3.height);
@@ -375,7 +398,23 @@ function startGraph3(x = topCoords3[0][0] + 5, y = topCoords3[0][1] - R3) {
             ctx3.lineTo(21, 399);
             break;
         case "1":
-            ctx3.lineTo(topCoords3[1][0], topCoords3[1][1] + 5);
+            let values = [];
+            for(i=0; i <= 30000; i++){
+                let out = Math.round((i/100)*Math.acos(1-Hpx3/(i/100)) - (Hpx3*(2*(i/100) - Hpx3))**0.5);
+                if (out - 5 < Math.round(Dpx3) && Math.round(Dpx3) < out + 5) {
+                    while(out - 5 < Math.round(Dpx3) && Math.round(Dpx3) < out + 5){
+                        values.push(i/100);
+                        out = Math.round((i/10000)*Math.acos(1-Hpx3/(i/10000)) - (Hpx3*(2*(i/10000) - Hpx3))**0.5);
+                        i++;
+                    }
+                    Rad3 = values.reduce((a,b) => a + b, 0)/values.length;
+                    break;
+                };
+            }
+            for (let i=0; i <= Hpx3; i++){
+                ctx3.lineTo((Rad3 * Math.acos(1 - (i)/Rad3) - ((i) * (2 * Rad3 - (i))) ** 0.5) + topCoords3[0][0] + 5, graph3.height - (graph3.height - topCoords3[1][1] - 5 + Hpx3 - i));
+            }
+            ctx3.lineTo(21, 399);
             break;
         case "2":
             for (let i=0; i <= Dpx3; i++){
@@ -397,8 +436,10 @@ function startGraph3(x = topCoords3[0][0] + 5, y = topCoords3[0][1] - R3) {
             break;
         default:
     }
+
     ctx3.fill();
     ctx3.fillStyle = "black";
+    
     //ctx3.stroke();
 
     ctx3.beginPath();
@@ -413,13 +454,13 @@ function redrawLine3() {
     if (Number(length_input3.value) > Number(height_input3.value)){
         ratio3 = height_input3.value / length_input3.value;
 
-        topCoords3[0][1] = (1 - ratio3) * 355 + 45;
-        topCoords3[0][3] = (1 - ratio3) * 355 + 45;  
+        topCoords3[0][1] = (1 - ratio3) * 348 + 45;
+        topCoords3[0][3] = (1 - ratio3) * 348 + 45;  
     } else if (Number(length_input3.value) < Number(height_input3.value)){
         ratio3 = Number(length_input3.value) / Number(height_input3.value);
 
-        topCoords3[1][0] = ratio3 * 348 + 20;
-        topCoords3[1][2] = ratio3 * 348 + 20;
+        topCoords3[1][0] = ratio3 * 355 + 20;
+        topCoords3[1][2] = ratio3 * 355 + 20;
     }
     x3 = topCoords3[0][0] + 5;
     y3 = topCoords3[0][1] - R3;
@@ -459,6 +500,7 @@ function startAnimation3(t, induced = 0) {
             c = (Hpx3 * (Dpx3 + 1) / (Dpx3 * (xpos3 + 1 + 0.00001)) - Hpx3 * (Dpx3 + 1) / (Dpx3 * (xpos3 + 1))) / 0.00001;
             break;
         case "1":
+            c = 1 / (((Rad3 * Math.acos(1 - (Hpx3 - ypos3 + 0.00001) / Rad3) - ((Hpx3 - ypos3 + 0.00001) * (2 * Rad3 - (Hpx3 - ypos3 + 0.00001))) ** 0.5) - (Rad3 * Math.acos(1 - (Hpx3 - ypos3) / Rad3) - ((Hpx3 - ypos3) * (2 * Rad3 - (Hpx3 - ypos3))) ** 0.5))/ 0.00001);
             break;
         case "2":
             c = ((-Hpx3/Math.sqrt(Dpx3)) * Math.sqrt(xpos3 + 0.00001) - (-Hpx3/Math.sqrt(Dpx3)) * Math.sqrt(xpos3)) / 0.00001;
@@ -471,15 +513,15 @@ function startAnimation3(t, induced = 0) {
     a = 9.80665 * (Math.sin(angle2) - F3 * Math.cos(angle2));
     x3 = (0.5 * a * (t - t1) ** 2 + v3 * (t - t1)) / Math.sqrt(c ** 2 + 1);
     y3 = - c * x3;
-   // console.log(`x1: ${x3}\nc: ${c}\na: ${a}\nt1: ${t1}\ntimeDif2: ${2 * timeDif3}\nv1: ${v3}`);
-    xpos3 += x3;
-    ypos3 -= y3;
+   
+   if (functions3.value === "1") {
+    x3 = -x3;
+   }
+
+   xpos3 += x3; 
+   ypos3 -= y3;
     v3 += a * (t - t1);
     t1 = t;
-    if (functions3.value === "1"){
-        xpos3 = 0.5 * 355 * (t - Math.sin(t));
-        ypos3 = 0.5 * 355 * (-1 + Math.cos(t)) + 355;
-    }
     
     if (ypos3 > Hpx3 || xpos3 > Dpx3 || x3 < - 0.01) {
         playButton3 *= -1;
@@ -492,6 +534,7 @@ function startAnimation3(t, induced = 0) {
         return;
     }
     startGraph3(xpos3 + 20 /*+ Number(R2)*/, 400 - ypos3 - Number(R3));
+    
     if (induced === 1) {
         time5 = new Date();
     }
@@ -499,7 +542,7 @@ function startAnimation3(t, induced = 0) {
     timeDif3 += time6.getSeconds() - time5.getSeconds() + (time6.getMilliseconds() - time5.getMilliseconds())/1000;
     time5 = time6;
     timer3.textContent = `time: ${timeDif3.toFixed(2)}s`;
-    setInterval(() => startAnimation3(2 * timeDif3), 10);
+    setInterval(() => startAnimation3(accel * timeDif3), 10);
 }
 // ------------------ END functions - graph3 --------------------
 // ------------------ play-all function -------------------------
@@ -516,7 +559,7 @@ start1.addEventListener("click", () => {
     }else {
         start1.innerHTML = "start";
     }
-    startAnimation1(2 * timeDif, 1);
+    startAnimation1(accel * timeDif, 1);
 });
 scale1.addEventListener('change', () => {
     R = scale1.value;
@@ -536,7 +579,7 @@ start2.addEventListener("click", () => {
     }else {
         start2.innerHTML = "start";
     }
-    startAnimation2(2 * timeDif2, 1);
+    startAnimation2(accel * timeDif2, 1);
 });
 
 scale2.addEventListener('change', () => {
@@ -559,7 +602,7 @@ start3.addEventListener("click", () => {
     }else {
         start3.innerHTML = "start";
     }
-    startAnimation3(2 * timeDif3, 1);
+    startAnimation3(accel * timeDif3, 1);
 });
 
 scale3.addEventListener('change', () => {
